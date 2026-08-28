@@ -3,7 +3,7 @@ import type { CatalogItem, CompareOutput, PackageId, QuotePackage } from "./type
 
 const LABELS: Record<PackageId, string> = {
   base: "Base: under-sink reverse osmosis",
-  gold: "Gold: under-sink RO + shower filters",
+  gold: "Gold: under-sink RO + shower filter",
   platinum: "Platinum: whole-home + under-sink RO"
 };
 
@@ -16,22 +16,22 @@ function itemCovers(item: CatalogItem, contaminant: string): boolean {
   return item.treats.some((t) => n.includes(t) || t === n);
 }
 
-export function quotePackages(compare: CompareOutput): QuotePackage[] {
+export function quotePackages(compare: CompareOutput, extraNames: string[] = []): QuotePackage[] {
   const items = catalog.items as CatalogItem[];
-  const exceedanceNames = compare.exceedances.map((e) => e.name);
+  const names = [...new Set([...compare.exceedances.map((e) => e.name), ...extraNames])];
   const ids: PackageId[] = ["base", "gold", "platinum"];
   return ids.map((id) => {
     const slots = catalog.packages[id] as CatalogItem["slot"][];
     const pkgItems = slots
       .map((slot) => items.find((item) => item.slot === slot))
       .filter((item): item is CatalogItem => Boolean(item));
-    const covered = exceedanceNames.filter((name) => pkgItems.some((item) => itemCovers(item, name)));
-    const uncovered = exceedanceNames.filter((name) => !covered.includes(name));
+    const covered = names.filter((name) => pkgItems.some((item) => itemCovers(item, name)));
+    const uncovered = names.filter((name) => !covered.includes(name));
     return {
       id,
       label: LABELS[id],
       items: pkgItems,
-      priceUsd: pkgItems.reduce((sum, item) => sum + item.priceUsd, 0),
+      priceUsd: Number(pkgItems.reduce((sum, item) => sum + item.priceUsd, 0).toFixed(2)),
       covered,
       uncovered
     };

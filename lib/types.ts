@@ -25,7 +25,7 @@ export type Utility = {
   state?: string;
   zip: string;
   populationServed?: number;
-  source: "echo" | "fixture";
+  source: "echo" | "fixture" | "sdwis";
 };
 
 export type PackageId = "base" | "gold" | "platinum";
@@ -57,6 +57,10 @@ export type CatalogItem = {
   treats: string[];
   slot: "undersink_ro" | "shower_carbon" | "whole_home";
   priceUsd: number;
+  sku?: string;
+  buyUrl?: string;
+  priceSource?: string;
+  priceAsOf?: string;
 };
 
 export type QuotePackage = {
@@ -75,6 +79,29 @@ export type Narrative = {
   vectorsHtml: string;
 };
 
+export type EpaLive = {
+  healthFlag: string | null;
+  seriousViolator: string | null;
+  activity: string | null;
+  contaminantsInViolation3yr: Array<{ code: string; name: string }>;
+  currentViolationContaminants: Array<{ code: string; name: string }>;
+  echoQuery: string;
+  sources: string[];
+};
+
+export type SearchHit = {
+  pwsId: string;
+  name: string;
+  type: string;
+  population: number;
+  city?: string;
+  state?: string;
+  zip: string;
+  healthBasedViolations: number;
+  totalViolations: number;
+  source: string;
+};
+
 export type ReportResponse = {
   utility: Utility;
   compare: CompareOutput;
@@ -83,6 +110,8 @@ export type ReportResponse = {
   disclaimer: string;
   dataQuality: "fixture" | "echo_partial" | "live";
   claimedFromCall?: string;
+  epaLive?: EpaLive;
+  systems?: SearchHit[];
 };
 
 export type OccurrenceFixture = {

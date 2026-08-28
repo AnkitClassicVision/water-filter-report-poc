@@ -1,47 +1,72 @@
 {
   "items": [
     {
-      "id": "ro-undersink-1",
-      "name": "Placeholder under-sink reverse osmosis",
-      "placeholder": true,
-      "nsf": ["58", "53"],
+      "id": "ispring-rcc7ak",
+      "name": "iSpring RCC7AK 6-stage under-sink reverse osmosis",
+      "placeholder": false,
+      "sku": "RCC7AK",
+      "nsf": ["58"],
       "treats": [
+        "arsenic",
+        "lead",
+        "fluoride",
+        "nitrate",
+        "selenium",
+        "tds",
+        "pfoa",
+        "pfos",
+        "perfluorooctanesulfonic acid (pfos)",
+        "chlorite",
+        "chlorine dioxide",
         "haloacetic acids (haa5)",
         "total trihalomethanes (tthm)",
         "lithium",
-        "perfluorooctanesulfonic acid (pfos)",
-        "nitrate",
-        "perfluorobutane sulfonate (pfbs)",
-        "selenium",
-        "arsenic",
-        "pfoa",
-        "radium"
+        "e. coli",
+        "e. coli"
       ],
       "slot": "undersink_ro",
-      "priceUsd": 799
+      "priceUsd": 198.8,
+      "buyUrl": "https://www.amazon.com/iSpring-RCC7AK-Under-Sink-Drinking-Reverse/dp/B005LJ8EXU",
+      "priceSource": "Amazon.com listing for iSpring RCC7AK",
+      "priceAsOf": "2026-08-28"
     },
     {
-      "id": "shower-carbon-1",
-      "name": "Placeholder screw-in shower carbon filter",
-      "placeholder": true,
-      "nsf": ["177", "42"],
-      "treats": ["total trihalomethanes (tthm)", "haloacetic acids (haa5)"],
-      "slot": "shower_carbon",
-      "priceUsd": 89
-    },
-    {
-      "id": "whole-home-1",
-      "name": "Placeholder whole-home carbon / catalytic filter",
-      "placeholder": true,
-      "nsf": ["42", "53"],
+      "id": "sprite-sl2-sh3-bn",
+      "name": "Sprite Slim-Line 2 shower filter with shower head (brushed nickel)",
+      "placeholder": false,
+      "sku": "SL2-SH3-BN",
+      "nsf": ["177"],
       "treats": [
-        "haloacetic acids (haa5)",
+        "chlorine",
         "total trihalomethanes (tthm)",
-        "perfluorooctanesulfonic acid (pfos)",
-        "perfluorobutane sulfonate (pfbs)"
+        "haloacetic acids (haa5)",
+        "chlorine dioxide",
+        "chlorite"
+      ],
+      "slot": "shower_carbon",
+      "priceUsd": 41.58,
+      "buyUrl": "https://www.homedepot.com/p/Sprite-Showers-Slim-Line-2-Shower-Water-Filtration-System-with-Shower-Head-in-Brushed-Nickel-SL2-SH3-BN/324525453",
+      "priceSource": "Home Depot internet #324525453",
+      "priceAsOf": "2026-08-28"
+    },
+    {
+      "id": "aquasana-rhino-wh-1000",
+      "name": "Aquasana Rhino whole-house carbon/KDF filter WH-1000",
+      "placeholder": false,
+      "sku": "WH-1000",
+      "nsf": ["42"],
+      "treats": [
+        "chlorine",
+        "chlorine dioxide",
+        "chlorite",
+        "total trihalomethanes (tthm)",
+        "haloacetic acids (haa5)"
       ],
       "slot": "whole_home",
-      "priceUsd": 2499
+      "priceUsd": 999,
+      "buyUrl": "https://www.homedepot.com/p/Aquasana-Rhino-Whole-House-Water-Filtration-System-with-Carbon-and-KDF-Home-Water-Filtration-Reduces-Sediment-and-Chlorine-WH-1000/205502533",
+      "priceSource": "Home Depot Aquasana Rhino WH-1000 listing",
+      "priceAsOf": "2026-08-28"
     }
   ],
   "packages": {

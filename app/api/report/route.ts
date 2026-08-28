@@ -7,13 +7,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Rate limit. Try again later." }, { status: 429 });
   }
   let zip = "";
+  let pwsId = "";
   try {
-    const body = (await req.json()) as { zip?: string };
+    const body = (await req.json()) as { zip?: string; pwsId?: string };
     zip = String(body.zip || "").trim();
+    pwsId = String(body.pwsId || "").trim();
   } catch {
-    return NextResponse.json({ error: "Expected JSON { zip }." }, { status: 400 });
+    return NextResponse.json({ error: "Expected JSON { zip, pwsId? }." }, { status: 400 });
   }
-  const out = await buildReport(zip);
+  const out = await buildReport(zip, { pwsId: pwsId || undefined });
   if ("error" in out) {
     return NextResponse.json({ error: out.error }, { status: out.status });
   }

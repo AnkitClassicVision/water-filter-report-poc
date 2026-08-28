@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { parseCodedList } from "../lib/echo";
 import { findUtilityByZip } from "../lib/echo";
 
 const echoFirst = {
@@ -6,7 +7,7 @@ const echoFirst = {
     Message: "Success",
     QueryRows: "1",
     QueryID: "1",
-    Facilities: [
+    WaterSystems: [
       {
         PWSId: "CO0118040",
         PWSName: "Parker Water & Sanitation District",
@@ -14,11 +15,22 @@ const echoFirst = {
         StateCode: "CO",
         PopulationServedCount: 60000,
         PWSTypeCode: "CWS",
-        PWSTypeDesc: "Community water system"
+        PWSTypeDesc: "Community water system",
+        PWSActivityCode: "A"
       }
     ]
   }
 };
+
+describe("parseCodedList", () => {
+  it("splits EPA code=name pairs", () => {
+    const out = parseCodedList("0200=Surface Water Treatment Rule; 1008=Chlorine dioxide");
+    expect(out).toEqual([
+      { code: "0200", name: "Surface Water Treatment Rule" },
+      { code: "1008", name: "Chlorine dioxide" }
+    ]);
+  });
+});
 
 describe("findUtilityByZip", () => {
   it("maps a community system from mocked ECHO JSON", async () => {

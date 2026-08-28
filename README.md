@@ -1,35 +1,23 @@
-# Water filter report POC
+# Water filter report
 
-Public ZIP-to-water-risk report and three NSF filter quotes.
+Public ZIP search against live EPA drinking-water data, plus three retail filter packages.
 
-Not medical advice. Not an EPA Consumer Confidence Report. Visitor ZIP codes are not stored.
+Not medical advice. Checkout is on the seller site. Visitor ZIP codes are not stored.
 
-## What it does
+## Live data
 
-1. Visitor enters a US ZIP (or clicks Try Parker, CO).
-2. The app compares cited contaminant results to labeled health guidelines.
-3. It writes a consumer report and shows Base / Gold / Platinum placeholder quotes.
+1. ZIP search uses EPA SDWIS via `https://waterviolations.org/api/v1/zip/{zip}` (public-domain EPA data, quarterly).
+2. The selected PWS is enriched from EPA ECHO SDWA REST (`get_systems` + `get_qid`), including 3-year contaminants in violation.
+3. Measured concentration tables are used only when a sourced fixture exists for that PWS (Parker `CO0118040`). Other ZIPs do not get invented ppb values.
 
-Parker, CO (`80134`, PWS `CO0118040`) uses a checked-in fixture from public CCR and published tap-water figures. Other ZIPs try EPA ECHO for the utility name. Occurrence tables are not invented. If no fixture exists, the report says so.
+## Prices (28 Aug 2026)
 
-The LLM, when `LLM_API_KEY` is set, writes prose from the JSON fact packet. If the key is missing or the model invents numbers, the page uses a template.
+- Base: iSpring RCC7AK $198.80 (Amazon)
+- Gold: RCC7AK + Sprite Slim-Line 2 $240.38
+- Platinum: Aquasana Rhino WH-1000 $999 + RCC7AK $1,197.80
 
 ## Local
 
 ```bash
 npm install && npm test && npm run dev
 ```
-
-Open `http://localhost:3000`.
-
-## Env
-
-Copy `.env.example` to `.env.local`. Do not commit secrets.
-
-- `LLM_API_KEY` optional
-- `LLM_MODEL` optional, default `grok-4-fast`
-- `LLM_BASE_URL` optional, default `https://api.x.ai/v1`
-
-## Data honesty
-
-Patrick's spoken sample cited 13 of about 40 contaminants outside health guidelines. That file was not supplied. The Parker demo reports only cited public rows and prints that gap on the page.
