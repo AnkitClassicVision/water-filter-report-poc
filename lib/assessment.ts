@@ -36,6 +36,11 @@ export function foldLabel(n: number): string {
   return `${n.toFixed(2)}x`;
 }
 
+export function barWidth(foldOver: number, maxFold: number): number {
+  if (!(maxFold > 0)) return 0;
+  return Math.min(100, Math.max(6, (foldOver / maxFold) * 100));
+}
+
 export function buildPathways(compare: CompareOutput): Pathway[] {
   return ORDER.map((id) => {
     const rows = compare.exceedances

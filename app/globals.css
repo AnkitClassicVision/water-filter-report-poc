@@ -322,14 +322,82 @@ button.secondary, a.secondary {
 
 .disclaimer { margin-top: 2.5rem; color: var(--muted); font-size: 0.92rem; max-width: 70ch; }
 
+.profile {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 1.2rem;
+  align-items: center;
+  margin: 0 0 1.6rem;
+}
+.gauge { width: 9.5rem; height: 9.5rem; }
+.gauge-n {
+  font-family: var(--font-display), sans-serif;
+  font-size: 2rem;
+  fill: #1c2a32;
+}
+.gauge-l { font-size: 0.7rem; fill: #3d4f58; }
+
+.andons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin: 0 0 1.6rem;
+}
+.lamp {
+  padding: 1rem 1.1rem;
+  color: var(--paper);
+  min-height: 6.5rem;
+}
+.lamp.go { background: #1f6b4a; }
+.lamp.stop { background: var(--rust); }
+.lamp.wait { background: #7a5b12; }
+.lamp b {
+  display: block;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  line-height: 1;
+}
+.lamp span { display: block; margin-top: 0.35rem; font-size: 0.92rem; }
+
+.mix {
+  display: flex;
+  height: 0.85rem;
+  margin: 0 0 1.6rem;
+  background: color-mix(in oklab, var(--ink) 12%, var(--stone));
+}
+.mix-bad { background: var(--rust); }
+.mix-ok { background: #1f6b4a; }
 .gap-note {
   background: var(--paper);
   padding: 1rem 1.1rem;
-  margin: 0 0 2rem;
+  margin: 0 0 1.6rem;
+}
+
+.board { list-style: none; padding: 0; margin: 0 0 2.2rem; }
+.board li {
+  display: grid;
+  grid-template-columns: minmax(7rem, 14rem) 1fr 3.6rem;
+  gap: 0.55rem;
+  align-items: center;
+  margin: 0 0 0.45rem;
+}
+.board .name { font-size: 0.92rem; }
+.track {
+  height: 0.72rem;
+  background: color-mix(in oklab, var(--ink) 10%, var(--stone));
+}
+.fill { display: block; height: 100%; background: var(--rust); }
+.board .x {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--rust);
 }
 
 @media (max-width: 800px) {
-  .film, .facts, .chapter, .chapter.reverse, .exposure, .blinds { grid-template-columns: 1fr; }
+  .film, .facts, .chapter, .chapter.reverse, .exposure, .blinds, .andons, .profile { grid-template-columns: 1fr; }
+  .board li { grid-template-columns: 1fr 3.2rem; }
+  .board .track { grid-column: 1 / -1; }
   .chapter.reverse .photo { order: 0; }
   .film img, .exposure img { height: 28vh; }
 }

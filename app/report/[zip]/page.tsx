@@ -1,5 +1,7 @@
-import { buildPathways, foldLabel, pfasOver } from "@/lib/assessment";
+import { QualityGauge } from "@/app/QualityGauge";
+import { barWidth, buildPathways, foldLabel, pfasOver } from "@/lib/assessment";
 import { buildReport } from "@/lib/report";
+import { scoreWaterQuality } from "@/lib/score";
 import type { ReportResponse } from "@/lib/types";
 import Link from "next/link";
 
@@ -35,12 +37,26 @@ export default async function ReportPage({
   const state = report.utility.state || "";
   const pathways = buildPathways(report.compare);
   const primary = pathways.filter((p) => ["cancer", "liver", "developmental"].includes(p.id));
-  const secondary = pathways.filter((p) => ["immune", "genotoxic"].includes(p.id));
   const pfas = pfasOver(report.compare);
   const hasOccurrence = report.compare.reportedCount > 0;
   const over = report.compare.overGuidelineCount;
   const detected = report.detectedCount || report.compare.reportedCount;
+  const within = Math.max(detected - over, 0);
   const years = report.period || "live EPA window";
+  const maxFold = Math.max(...report.compare.exceedances.map((r) => r.foldOver), 1);
+  const ranked = [...report.compare.exceedances].sort((a, b) => b.foldOver - a.foldOver);
+  const profile = scoreWaterQuality(
+    zip,
+    report.utility.pwsId,
+    report.utility.name,
+    report.compare,
+    report.detectedCount,
+    report.epaLive
+  );
+  const epaClean =
+    report.epaLive &&
+    /^(no|n)?$/i.test((report.epaLive.healthFlag || "no").trim()) &&
+    /^(no|n)?$/i.test((report.epaLive.seriousViolator || "no").trim());
   const chapterPhoto = ["/img/glass.jpg", "/img/kitchen.jpg", "/img/source.jpg"];
 
   return (
@@ -69,9 +85,6 @@ export default async function ReportPage({
               <small>No sourced occurrence table. Fold-overs are not invented.</small>
             </div>
           )}
-          <p>
-            Independent read of {report.utility.name}. {report.utility.pwsId}.
-          </p>
         </div>
       </header>
 
@@ -91,6 +104,57 @@ export default async function ReportPage({
       </div>
 
       <div className="sheet">
+        <section className="profile">
+          <QualityGauge value={profile.quality} band={profile.band} />
+          <div>
+            <h2>Risk profile for {zip}</h2>
+            <p>{profile.headline}</p>
+            <p className="muted">
+              100 is best: no EWG health-guideline exceedances and no EPA health/serious flags.
+              Basis: {profile.basis}. Band: {profile.band}.
+            </p>
+            <ul>
+              {profile.drivers.map((d) => (
+                <li key={d}>{d}</li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <div className="andons">
+          <div className={epaClean ? "lamp go" : "lamp wait"}>
+            <b>{epaClean ? "EPA legal" : "EPA watch"}</b>
+            <span>
+              Health flag {report.epaLive?.healthFlag || "n/a"}. Serious violator{" "}
+              {report.epaLive?.seriousViolator || "n/a"}.
+            </span>
+          </div>
+          <div className={hasOccurrence && over > 0 ? "lamp stop" : "lamp go"}>
+            <b>{hasOccurrence && over > 0 ? "Health guide fail" : "Health guide"}</b>
+            <span>
+              {hasOccurrence
+                ? `${over} of ${detected} over EWG guidelines`
+                : "No sourced health-guideline table for this PWS"}
+            </span>
+          </div>
+        </div>
+
+        {hasOccurrence ? (
+          <div
+            className="mix"
+            role="img"
+            aria-label={`${over} of ${detected} out of range`}
+          >
+            <span className="mix-bad" style={{ flex: over }} />
+            <span className="mix-ok" style={{ flex: within }} />
+          </div>
+        ) : (
+          <p className="gap-note">
+            This ZIP has live EPA identity only. The 13-of-38 scoreboard exists when a sourced
+            occurrence table is on file, as with Parker WSD.
+          </p>
+        )}
+
         <dl className="facts">
           <div>
             <dt>Utility</dt>
@@ -116,24 +180,26 @@ export default async function ReportPage({
           </div>
         </dl>
 
-        {report.epaLive ? (
-          <p>
-            Live EPA ECHO: health flag {report.epaLive.healthFlag || "n/a"}; serious violator{" "}
-            {report.epaLive.seriousViolator || "n/a"}. Contaminants in violation (3 years):{" "}
-            {report.epaLive.contaminantsInViolation3yr.length
-              ? report.epaLive.contaminantsInViolation3yr.map((c) => c.name).join("; ")
-              : "none listed"}
-            .{" "}
-            {report.epaLive.sources[1] ? (
-              <a href={report.epaLive.sources[1]}>EPA facility report</a>
-            ) : null}
-          </p>
+        {ranked.length > 0 ? (
+          <>
+            <h2>What is out, longest bar is worst</h2>
+            <ol className="board">
+              {ranked.map((row) => (
+                <li key={row.name}>
+                  <span className="name">{row.name}</span>
+                  <span className="track">
+                    <span className="fill" style={{ width: `${barWidth(row.foldOver, maxFold)}%` }} />
+                  </span>
+                  <span className="x">{foldLabel(row.foldOver)}</span>
+                </li>
+              ))}
+            </ol>
+          </>
         ) : null}
 
-        {!hasOccurrence ? (
-          <p className="gap-note">
-            This ZIP has live EPA identity only. The 13-of-38 scoreboard exists when a sourced
-            occurrence table is on file, as with Parker WSD.
+        {report.epaLive?.sources[1] ? (
+          <p className="muted">
+            <a href={report.epaLive.sources[1]}>EPA detailed facility report</a>
           </p>
         ) : null}
 
@@ -144,29 +210,20 @@ export default async function ReportPage({
             </div>
             <div>
               <h2>{p.label}</h2>
-              <p className="muted">{p.blurb}</p>
-              <table className="contrib">
-                <tbody>
-                  {p.rows.slice(0, 8).map((row) => (
-                    <tr key={row.name}>
-                      <td>{row.name}</td>
-                      <td>{foldLabel(row.foldOver)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <ol className="board">
+                {p.rows.slice(0, 8).map((row) => (
+                  <li key={row.name}>
+                    <span className="name">{row.name}</span>
+                    <span className="track">
+                      <span className="fill" style={{ width: `${barWidth(row.foldOver, maxFold)}%` }} />
+                    </span>
+                    <span className="x">{foldLabel(row.foldOver)}</span>
+                  </li>
+                ))}
+              </ol>
             </div>
           </section>
         ))}
-
-        {secondary.length > 0 ? (
-          <p className="muted">
-            Also grouped:{" "}
-            {secondary
-              .map((p) => `${p.label} (${p.rows.map((r) => foldLabel(r.foldOver)).join(", ")})`)
-              .join(". ")}
-          </p>
-        ) : null}
 
         <h2>Where you meet the water</h2>
         <p className="muted">Typical drinking-water split. Not measured at this tap.</p>
@@ -175,38 +232,22 @@ export default async function ReportPage({
             <img src="/img/glass.jpg" alt="Glass of water" />
             <figcaption>
               <strong>~60%</strong>
-              Ingestion. Drinking, cooking, ice.
+              Ingestion
             </figcaption>
           </figure>
           <figure>
             <img src="/img/shower.jpg" alt="Shower" />
             <figcaption>
               <strong>~25%</strong>
-              Skin. Showers, baths, hands.
+              Skin
             </figcaption>
           </figure>
           <figure>
             <img src="/img/hero-tap.jpg" alt="Running tap" />
             <figcaption>
               <strong>~15%</strong>
-              Inhalation. Steam and aerosol.
+              Steam
             </figcaption>
-          </figure>
-        </div>
-
-        <h2>What the utility report never tests</h2>
-        <div className="blinds">
-          <figure>
-            <img src="/img/source.jpg" alt="" />
-            <figcaption>Microplastics</figcaption>
-          </figure>
-          <figure>
-            <img src="/img/kitchen.jpg" alt="" />
-            <figcaption>Pharmaceuticals</figcaption>
-          </figure>
-          <figure>
-            <img src="/img/glass.jpg" alt="" />
-            <figcaption>BPA, hormones, pesticides</figcaption>
           </figure>
         </div>
 
