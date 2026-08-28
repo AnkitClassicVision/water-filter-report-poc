@@ -8,8 +8,10 @@ import type {
 
 const LABELS: Record<HealthGroupId, string> = {
   cancer: "Cancer risk",
-  liver: "Liver disease",
+  liver: "Kidney and liver toxicity",
   developmental: "Childhood developmental risk",
+  immune: "Immune risks",
+  genotoxic: "Genotoxic risks",
   other: "Other health concerns"
 };
 

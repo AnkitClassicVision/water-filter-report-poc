@@ -1,18 +1,22 @@
 import { describe, expect, it } from "vitest";
+import { buildPathways, foldLabel } from "../lib/assessment";
 import { compareResults } from "../lib/compare";
 import { getParkerFixture } from "../lib/report";
 
 describe("Parker fixture", () => {
-  it("produces a scoreboard from cited public rows", () => {
+  it("matches the v5 PDF / EWG 13-over scoreboard", () => {
     const fixture = getParkerFixture();
     expect(fixture.utility.pwsId).toBe("CO0118040");
-    expect(fixture.demoZip).toBe("80134");
+    expect(fixture.detectedCount).toBe(38);
     const out = compareResults(fixture.results);
-    expect(out.reportedCount).toBe(fixture.results.length);
-    expect(out.reportedCount).toBeGreaterThanOrEqual(1);
-    expect(out.overGuidelineCount).toBeGreaterThan(0);
-    const ids = out.topHealthGroups.map((g) => g.id);
-    expect(ids.some((id) => ["cancer", "liver", "developmental"].includes(id))).toBe(true);
-    expect(fixture.claimedFromCall).toMatch(/13/);
+    expect(out.overGuidelineCount).toBe(13);
+    const haa9 = out.exceedances.find((r) => r.name.includes("HAA9"));
+    expect(haa9).toBeTruthy();
+    expect(Math.round(haa9!.foldOver)).toBe(146);
+    const arsenic = out.exceedances.find((r) => r.name === "Arsenic");
+    expect(Math.round(arsenic!.foldOver)).toBe(52);
+    const pathways = buildPathways(out);
+    expect(pathways[0].id).toBe("cancer");
+    expect(foldLabel(146)).toBe("146x");
   });
 });

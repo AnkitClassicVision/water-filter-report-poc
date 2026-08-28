@@ -49,7 +49,7 @@ export default function HomePage() {
   }, [systems, query]);
 
   return (
-    <main>
+    <main className="search-wrap">
       <h1>Search your water. Buy a filter package.</h1>
       <p className="muted">
         Live EPA SDWIS/ECHO lookup by ZIP. Retail prices as of 28 Aug 2026. Not medical advice.

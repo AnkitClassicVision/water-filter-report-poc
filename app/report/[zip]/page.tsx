@@ -1,15 +1,10 @@
+import { buildPathways, foldLabel, pfasOver } from "@/lib/assessment";
 import { buildReport } from "@/lib/report";
 import type { ReportResponse } from "@/lib/types";
 import Link from "next/link";
 
 function money(n: number): string {
   return n.toLocaleString("en-US", { style: "currency", currency: "USD" });
-}
-
-function fold(n: number): string {
-  if (n >= 10) return `${n.toFixed(0)}x`;
-  if (n >= 1) return `${n.toFixed(1)}x`;
-  return n.toFixed(2);
 }
 
 export default async function ReportPage({
@@ -25,7 +20,7 @@ export default async function ReportPage({
 
   if ("error" in out) {
     return (
-      <main>
+      <main className="err">
         <h1>No report</h1>
         <p>{out.error}</p>
         <p>
@@ -36,101 +31,203 @@ export default async function ReportPage({
   }
 
   const report = out as ReportResponse;
-  const live = report.epaLive;
+  const city = report.utility.city || report.utility.name;
+  const state = report.utility.state || "";
+  const pathways = buildPathways(report.compare);
+  const primary = pathways.filter((p) => ["cancer", "liver", "developmental"].includes(p.id));
+  const secondary = pathways.filter((p) => ["immune", "genotoxic"].includes(p.id));
+  const pfas = pfasOver(report.compare);
+  const hasOccurrence = report.compare.reportedCount > 0;
+  const over = report.compare.overGuidelineCount;
+  const detected = report.detectedCount || report.compare.reportedCount;
+  const within = Math.max(detected - over, 0);
+  const years = report.period || "live EPA window";
 
   return (
-    <main>
-      <p className="muted">
+    <article className="assessment">
+      <p className="kicker">
+        <span>Water health assessment {report.utility.pwsId}</span>
         <Link href="/">New search</Link>
       </p>
-      <h1>{report.utility.name}</h1>
-      <p className="muted">
-        PWS {report.utility.pwsId} · ZIP {report.utility.zip} · live EPA {report.dataQuality}
-        {report.utility.populationServed
-          ? ` · pop ${report.utility.populationServed.toLocaleString("en-US")}`
-          : ""}
-      </p>
+      <h1 className="place">
+        {city}
+        {state ? `, ${state}` : ""}
+      </h1>
+      <p className="lede">Of utility test data reviewed. Independent analysis of municipal drinking water.</p>
 
-      {live ? (
-        <>
+      <div className="meta-grid">
+        <div>
+          {hasOccurrence ? (
+            <div className="scoreboard">
+              <div className="stat">
+                <span className="n">{over}</span>
+                Out of range
+                <small>Exceed at least one health-based guideline for long-term exposure.</small>
+              </div>
+              <div className="stat ok">
+                <span className="n">{within}</span>
+                Within range
+                <small>Detected at levels below published health guidelines, or not in this sourced table.</small>
+              </div>
+              <div className="stat">
+                <span className="n">{pfas.length}</span>
+                PFAS compounds
+                <small>
+                  {pfas.length
+                    ? pfas.map((r) => `${r.name.split("(")[0].trim()} (${foldLabel(r.foldOver)})`).join(" and ")
+                    : "None over guidelines in this sourced table."}
+                </small>
+              </div>
+              <div className="stat ok">
+                <span className="n">{detected}</span>
+                Analytes
+                <small>Contaminants detected in the sourced window.</small>
+              </div>
+            </div>
+          ) : (
+            <div className="stat">
+              <span className="n">EPA</span>
+              Live identity only
+              <small>
+                No sourced occurrence table for this PWS. Fold-overs are not invented. EPA ECHO
+                contaminants in violation are listed below.
+              </small>
+            </div>
+          )}
+        </div>
+        <dl className="facts">
+          <dt>Location</dt>
+          <dd>
+            {city}
+            {state ? `, ${state}` : ""}
+          </dd>
+          <dt>Utility</dt>
+          <dd>{report.utility.name}</dd>
+          <dt>Period</dt>
+          <dd>{years}</dd>
+          <dt>Sources</dt>
+          <dd>
+            {hasOccurrence ? "U.S. EPA identity plus EWG health-guideline table" : "U.S. EPA SDWIS / ECHO"}
+          </dd>
+          <dt>Guideline set</dt>
+          <dd>{report.guidelineSet || "EPA legal limits and ECHO violation flags only"}</dd>
+        </dl>
+      </div>
+
+      {hasOccurrence ? (
+        <p className="analytes">
+          <b>{detected}</b> contaminants detected · {over} outside EWG health guidelines · EPA legal
+          compliance is a separate fact
+        </p>
+      ) : null}
+
+      {report.epaLive ? (
+        <section>
           <h2>Live EPA ECHO status</h2>
           <p>
-            Health flag: {live.healthFlag || "n/a"}. Serious violator: {live.seriousViolator || "n/a"}.
-            Activity: {live.activity || "n/a"}.
+            Health flag: {report.epaLive.healthFlag || "n/a"}. Serious violator:{" "}
+            {report.epaLive.seriousViolator || "n/a"}. Activity: {report.epaLive.activity || "n/a"}.
           </p>
           <p>
             Contaminants in violation (3 years):{" "}
-            {live.contaminantsInViolation3yr.length
-              ? live.contaminantsInViolation3yr.map((c) => c.name).join("; ")
+            {report.epaLive.contaminantsInViolation3yr.length
+              ? report.epaLive.contaminantsInViolation3yr.map((c) => c.name).join("; ")
               : "none listed"}
           </p>
-          {live.sources[1] ? (
+          {report.epaLive.sources[1] ? (
             <p className="muted">
-              <a href={live.sources[1]}>EPA detailed facility report</a>
+              <a href={report.epaLive.sources[1]}>EPA detailed facility report</a>
             </p>
           ) : null}
-        </>
+        </section>
+      ) : null}
+
+      <h2>Health risk pathways</h2>
+      <p className="muted">What these exceedances are linked to. Fold-over vs EWG / CA PHG, not EPA MCL.</p>
+      {primary.length === 0 ? (
+        <p>No sourced health-guideline exceedances to group.</p>
       ) : (
-        <p>ECHO live fields were not returned for this system. SDWIS identity is still live.</p>
+        primary.map((p, i) => (
+          <section className="pathway" key={p.id}>
+            <div className="num">{String(i + 1).padStart(2, "0")}</div>
+            <div>
+              <h3>{p.label}</h3>
+              <p className="muted">{p.blurb}</p>
+              <p>
+                <b>{p.rows.length}</b> linked contributors
+              </p>
+            </div>
+            <table className="contrib">
+              <tbody>
+                {p.rows.slice(0, 8).map((row) => (
+                  <tr key={row.name}>
+                    <td>{row.name}</td>
+                    <td>{foldLabel(row.foldOver)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        ))
       )}
 
-      {report.compare.reportedCount > 0 ? (
+      {secondary.length > 0 ? (
         <>
-          <p className="score">
-            {report.compare.overGuidelineCount} of {report.compare.reportedCount} cited measured
-            results sit outside health guidelines
-          </p>
-          {report.claimedFromCall ? <p className="muted">{report.claimedFromCall}</p> : null}
-        </>
-      ) : (
-        <p className="muted">
-          No sourced concentration table for this PWS. The EPA violation list above is the live
-          result. Concentrations are not invented.
-        </p>
-      )}
-
-      {report.narrative ? (
-        <>
-          <h2>{report.narrative.headline}</h2>
-          <div dangerouslySetInnerHTML={{ __html: report.narrative.summaryHtml }} />
+          <h2>Secondary pathways</h2>
+          <div className="routes">
+            {secondary.map((p) => (
+              <div className="route" key={p.id}>
+                <div className="pct">{p.rows.length}</div>
+                <div>{p.label}</div>
+                <p className="muted">{p.rows.map((r) => `${r.name} ${foldLabel(r.foldOver)}`).join("; ")}</p>
+              </div>
+            ))}
+          </div>
         </>
       ) : null}
 
-      {report.compare.exceedances.length > 0 ? (
-        <>
-          <h2>Measured exceedances</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Contaminant</th>
-                <th>Result</th>
-                <th>Guideline</th>
-                <th>Fold over</th>
-              </tr>
-            </thead>
-            <tbody>
-              {report.compare.exceedances.map((row) => (
-                <tr key={row.name}>
-                  <td>{row.name}</td>
-                  <td>
-                    {row.value} {row.unit}
-                  </td>
-                  <td>
-                    {row.healthGuideline} {row.unit}
-                    <div className="muted">{row.healthGuidelineSource}</div>
-                  </td>
-                  <td>{fold(row.foldOver)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      ) : null}
+      <h2>Exposure routes</h2>
+      <p className="muted">Typical drinking-water split. Not measured at this tap.</p>
+      <div className="routes">
+        <div className="route">
+          <div className="pct">~60%</div>
+          Ingestion
+          <p className="muted">Drinking, cooking, coffee, ice.</p>
+        </div>
+        <div className="route">
+          <div className="pct">~25%</div>
+          Dermal
+          <p className="muted">Skin during showers, baths, hand washing.</p>
+        </div>
+        <div className="route">
+          <div className="pct">~15%</div>
+          Inhalation
+          <p className="muted">Steam and aerosol in the shower.</p>
+        </div>
+      </div>
 
-      <h2>Filter packages for sale</h2>
+      <h2>Blind spots</h2>
       <p className="muted">
-        Retail checkout happens on the seller site. Prices are public list prices dated 28 Aug 2026.
+        Unregulated contaminants EPA does not require in the utility report. Not a test result for
+        this ZIP.
       </p>
+      <div className="blinds">
+        <div>01 Microplastics</div>
+        <div>02 Pharmaceuticals</div>
+        <div>03 Bisphenol A (BPA)</div>
+        <div>04 Hormones</div>
+        <div>05 Pesticides</div>
+        <div>06 Endocrine disruptors</div>
+      </div>
+
+      <section className="cta">
+        <h2>Engineer your water</h2>
+        <p>
+          Diagnose. Treat. Verify. One system matched to this contaminant profile. Retail packages
+          below. Checkout is on the seller site.
+        </p>
+      </section>
+
       <div className="packages">
         {report.packages.map((pkg) => (
           <article className="pack" key={pkg.id}>
@@ -141,7 +238,7 @@ export default async function ReportPage({
             <ul>
               {pkg.items.map((item) => (
                 <li key={item.id}>
-                  {item.name} · {money(item.priceUsd)} · NSF {item.nsf.join(", ")}
+                  {item.name} · {money(item.priceUsd)}
                   {item.buyUrl ? (
                     <>
                       {" "}
@@ -150,7 +247,6 @@ export default async function ReportPage({
                       </a>
                     </>
                   ) : null}
-                  {item.priceSource ? <div className="muted">{item.priceSource}</div> : null}
                 </li>
               ))}
             </ul>
@@ -173,6 +269,6 @@ export default async function ReportPage({
       ) : null}
 
       <p className="disclaimer">{report.disclaimer}</p>
-    </main>
+    </article>
   );
 }

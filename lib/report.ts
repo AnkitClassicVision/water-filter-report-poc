@@ -120,7 +120,13 @@ export async function buildReport(
     dataQuality,
     claimedFromCall: fixture && fixture.utility.pwsId === utility.pwsId ? fixture.claimedFromCall : undefined,
     epaLive: live,
-    systems
+    systems,
+    period: fixture && fixture.utility.pwsId === utility.pwsId ? fixture.period : undefined,
+    detectedCount: fixture && fixture.utility.pwsId === utility.pwsId ? fixture.detectedCount : undefined,
+    guidelineSet:
+      fixture && fixture.utility.pwsId === utility.pwsId
+        ? "EWG health guidelines (stricter than EPA MCLs)"
+        : undefined
   };
 }
 

@@ -21,7 +21,7 @@ describe("writeNarrative", () => {
     const compare = compareResults(fixture.results);
     const packages = quotePackages(compare);
     expect(
-      narrativeHasInventedNumbers("There are 13 studies linking these contaminants to cancer.", {
+      narrativeHasInventedNumbers("There are 999 studies linking these contaminants to cancer.", {
         utility: fixture.utility,
         compare,
         packages

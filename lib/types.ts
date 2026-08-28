@@ -2,7 +2,7 @@ export type Unit = "ppb" | "ppm" | "ppt" | "pCi/L" | "mg/L";
 
 export type Exposure = "consumption" | "dermal" | "inhalation";
 
-export type HealthGroupId = "cancer" | "liver" | "developmental" | "other";
+export type HealthGroupId = "cancer" | "liver" | "developmental" | "immune" | "genotoxic" | "other";
 
 export type ContaminantResult = {
   name: string;
@@ -112,12 +112,17 @@ export type ReportResponse = {
   claimedFromCall?: string;
   epaLive?: EpaLive;
   systems?: SearchHit[];
+  period?: string;
+  detectedCount?: number;
+  guidelineSet?: string;
 };
 
 export type OccurrenceFixture = {
   utility: Utility;
   demoZip: string;
   vintage: string;
+  period?: string;
+  detectedCount?: number;
   results: ContaminantResult[];
   claimedFromCall?: string;
   notes: string;
