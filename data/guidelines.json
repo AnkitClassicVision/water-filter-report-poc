@@ -1,0 +1,18 @@
+{
+  "guidelines": [
+    {
+      "name": "Arsenic",
+      "unit": "ppb",
+      "healthGuideline": 0.004,
+      "healthGuidelineSource": "CA PHG",
+      "mcl": 10
+    },
+    {
+      "name": "Nitrate",
+      "unit": "ppm",
+      "healthGuideline": 0.14,
+      "healthGuidelineSource": "EWG",
+      "mcl": 10
+    }
+  ]
+}

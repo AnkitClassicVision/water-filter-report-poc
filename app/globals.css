@@ -1,0 +1,112 @@
+:root {
+  --paper: #f4efe6;
+  --ink: #1c1917;
+  --muted: #57534e;
+  --line: #d6d3d1;
+  --water: #0f4c5c;
+  --warn: #9a3412;
+  --card: #fffcf7;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  line-height: 1.45;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+h1, h2, h3 { font-weight: 650; letter-spacing: -0.02em; }
+h1 { font-size: 2.1rem; margin: 0 0 0.6rem; }
+h2 { font-size: 1.25rem; margin: 2rem 0 0.6rem; }
+
+p, li { color: var(--ink); }
+.muted { color: var(--muted); font-size: 0.95rem; }
+
+form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 1.25rem 0;
+}
+
+input[type="text"] {
+  flex: 1 1 12rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--ink);
+  background: var(--card);
+  font: inherit;
+}
+
+button, .btn {
+  appearance: none;
+  border: 1px solid var(--ink);
+  background: var(--water);
+  color: #fff;
+  padding: 0.7rem 1rem;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button.secondary, a.secondary {
+  background: transparent;
+  color: var(--ink);
+}
+
+.score {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+  background: var(--card);
+}
+
+th, td {
+  text-align: left;
+  padding: 0.45rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.packages {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pack {
+  border: 1px solid var(--ink);
+  padding: 1rem;
+  background: var(--card);
+}
+
+.pack h3 { margin-top: 0; }
+
+.warn { color: var(--warn); }
+
+.disclaimer {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+@media print {
+  button, form { display: none; }
+  body { background: #fff; }
+}

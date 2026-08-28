@@ -1,0 +1,107 @@
+{
+  "demoZip": "80134",
+  "vintage": "Parker WSD 2026 CCR covering calendar 2025, plus published tap-water figures cited per row",
+  "claimedFromCall": "Spoken sample cited 13 of about 40 contaminants outside health guidelines. This fixture uses only cited public rows, not that unpublished file.",
+  "notes": "Health guidelines are stricter than EPA MCLs. A utility can meet legal limits and still exceed these guidelines. Do not treat this as an EPA Consumer Confidence Report.",
+  "sources": [
+    "https://pwsd.org/DocumentCenter/View/4534/2026-Consumer-Confidence-Report-PDF",
+    "https://www.ewg.org/tapwater/system.php?pws=CO0118040",
+    "https://oehha.ca.gov/public-health-goals-phgs",
+    "https://echo.epa.gov/detailed-facility-report?fid=CO0118040&sys=SDWIS"
+  ],
+  "utility": {
+    "pwsId": "CO0118040",
+    "name": "Parker Water & Sanitation District",
+    "city": "Parker",
+    "state": "CO",
+    "zip": "80134",
+    "populationServed": 60000,
+    "source": "fixture"
+  },
+  "results": [
+    {
+      "name": "Haloacetic acids (HAA5)",
+      "value": 4.69,
+      "unit": "ppb",
+      "healthGuideline": 0.1,
+      "healthGuidelineSource": "CA PHG range for carcinogenic HAAs (0.03-0.2 ppb); 0.1 ppb used as group proxy",
+      "mcl": 60,
+      "mclSource": "EPA MCL",
+      "healthEffects": ["cancer", "liver"],
+      "exposure": ["consumption", "dermal"],
+      "sourceUrl": "https://pwsd.org/DocumentCenter/View/4534/2026-Consumer-Confidence-Report-PDF"
+    },
+    {
+      "name": "Total trihalomethanes (TTHM)",
+      "value": 16.29,
+      "unit": "ppb",
+      "healthGuideline": 0.4,
+      "healthGuidelineSource": "CA PHG for chloroform 0.4 ppb, applied as a TTHM proxy",
+      "mcl": 80,
+      "mclSource": "EPA MCL",
+      "healthEffects": ["cancer", "liver", "developmental"],
+      "exposure": ["consumption", "dermal", "inhalation"],
+      "sourceUrl": "https://pwsd.org/DocumentCenter/View/4534/2026-Consumer-Confidence-Report-PDF"
+    },
+    {
+      "name": "Lithium",
+      "value": 20.3,
+      "unit": "ppb",
+      "healthGuideline": 10,
+      "healthGuidelineSource": "UCMR 5 health-reference screening value commonly cited at 10 ppb; not an EPA MCL",
+      "mcl": null,
+      "mclSource": "No EPA MCL",
+      "healthEffects": ["developmental", "other"],
+      "exposure": ["consumption"],
+      "sourceUrl": "https://pwsd.org/DocumentCenter/View/4534/2026-Consumer-Confidence-Report-PDF"
+    },
+    {
+      "name": "Perfluorooctanesulfonic acid (PFOS)",
+      "value": 0.4,
+      "unit": "ppt",
+      "healthGuideline": 1,
+      "healthGuidelineSource": "CA PHG 1 ppt",
+      "mcl": 4,
+      "mclSource": "EPA MCL (compliance 2029)",
+      "healthEffects": ["cancer", "developmental"],
+      "exposure": ["consumption"],
+      "sourceUrl": "https://pwsd.org/DocumentCenter/View/4534/2026-Consumer-Confidence-Report-PDF"
+    },
+    {
+      "name": "Nitrate",
+      "value": 0.0498,
+      "unit": "ppm",
+      "healthGuideline": 0.14,
+      "healthGuidelineSource": "EWG health guideline 0.14 ppm",
+      "mcl": 10,
+      "mclSource": "EPA MCL as nitrogen",
+      "healthEffects": ["developmental"],
+      "exposure": ["consumption"],
+      "sourceUrl": "https://www.ewg.org/tapwater/system.php?pws=CO0118040"
+    },
+    {
+      "name": "Perfluorobutane sulfonate (PFBS)",
+      "value": 0.388,
+      "unit": "ppt",
+      "healthGuideline": 2000,
+      "healthGuidelineSource": "EWG health guideline 2000 ppt",
+      "mcl": null,
+      "mclSource": "No individual EPA MCL; used in PFAS hazard index",
+      "healthEffects": ["developmental", "other"],
+      "exposure": ["consumption"],
+      "sourceUrl": "https://www.ewg.org/tapwater/system.php?pws=CO0118040"
+    },
+    {
+      "name": "Selenium",
+      "value": 0.838,
+      "unit": "ppb",
+      "healthGuideline": 30,
+      "healthGuidelineSource": "EWG health guideline 30 ppb",
+      "mcl": 50,
+      "mclSource": "EPA MCL",
+      "healthEffects": ["other"],
+      "exposure": ["consumption"],
+      "sourceUrl": "https://www.ewg.org/tapwater/system.php?pws=CO0118040"
+    }
+  ]
+}

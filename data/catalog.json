@@ -1,0 +1,52 @@
+{
+  "items": [
+    {
+      "id": "ro-undersink-1",
+      "name": "Placeholder under-sink reverse osmosis",
+      "placeholder": true,
+      "nsf": ["58", "53"],
+      "treats": [
+        "haloacetic acids (haa5)",
+        "total trihalomethanes (tthm)",
+        "lithium",
+        "perfluorooctanesulfonic acid (pfos)",
+        "nitrate",
+        "perfluorobutane sulfonate (pfbs)",
+        "selenium",
+        "arsenic",
+        "pfoa",
+        "radium"
+      ],
+      "slot": "undersink_ro",
+      "priceUsd": 799
+    },
+    {
+      "id": "shower-carbon-1",
+      "name": "Placeholder screw-in shower carbon filter",
+      "placeholder": true,
+      "nsf": ["177", "42"],
+      "treats": ["total trihalomethanes (tthm)", "haloacetic acids (haa5)"],
+      "slot": "shower_carbon",
+      "priceUsd": 89
+    },
+    {
+      "id": "whole-home-1",
+      "name": "Placeholder whole-home carbon / catalytic filter",
+      "placeholder": true,
+      "nsf": ["42", "53"],
+      "treats": [
+        "haloacetic acids (haa5)",
+        "total trihalomethanes (tthm)",
+        "perfluorooctanesulfonic acid (pfos)",
+        "perfluorobutane sulfonate (pfbs)"
+      ],
+      "slot": "whole_home",
+      "priceUsd": 2499
+    }
+  ],
+  "packages": {
+    "base": ["undersink_ro"],
+    "gold": ["undersink_ro", "shower_carbon"],
+    "platinum": ["whole_home", "undersink_ro"]
+  }
+}
