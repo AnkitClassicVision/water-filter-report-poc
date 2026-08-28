@@ -50,9 +50,13 @@ export default function HomePage() {
 
   return (
     <main className="search-wrap">
-      <h1>Search your water. Buy a filter package.</h1>
+      <div className="search-hero">
+        <img src="/img/hero-tap.jpg" alt="Kitchen faucet" />
+        <div className="veil" />
+        <h1>Your tap, diagnosed.</h1>
+      </div>
       <p className="muted">
-        Live EPA SDWIS/ECHO lookup by ZIP. Retail prices as of 28 Aug 2026. Not medical advice.
+        Live EPA lookup by ZIP. Health-guideline fold-overs only when sourced. Not medical advice.
       </p>
       <form onSubmit={onSubmit}>
         <input
@@ -92,8 +96,7 @@ export default function HomePage() {
                     <strong>{s.name}</strong>
                   </a>
                   <div className="muted">
-                    {s.pwsId} · {s.type} · pop {s.population.toLocaleString("en-US")} · health-based
-                    violations {s.healthBasedViolations}
+                    {s.pwsId} · {s.type} · pop {s.population.toLocaleString("en-US")}
                   </div>
                 </li>
               ))}

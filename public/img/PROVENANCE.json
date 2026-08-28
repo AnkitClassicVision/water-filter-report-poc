@@ -1,0 +1,10 @@
+{
+  "origin": "Unsplash stock, downloaded 2026-08-28",
+  "files": [
+    { "path": "public/img/hero-tap.jpg", "photo": "1584622650111-993a426fbf0a", "use": "kitchen faucet hero" },
+    { "path": "public/img/glass.jpg", "photo": "1548839140-29a749e1cf4d", "use": "drinking glass" },
+    { "path": "public/img/shower.jpg", "photo": "1507652313519-d4e9174996dd", "use": "shower steam" },
+    { "path": "public/img/source.jpg", "photo": "1506905925346-21bda4d32df4", "use": "mountain source water" },
+    { "path": "public/img/kitchen.jpg", "photo": "1556912173-46c336c7fd55", "use": "kitchen CTA" }
+  ]
+}

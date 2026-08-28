@@ -20,7 +20,7 @@ export default async function ReportPage({
 
   if ("error" in out) {
     return (
-      <main className="err">
+      <main className="search-wrap">
         <h1>No report</h1>
         <p>{out.error}</p>
         <p>
@@ -40,235 +40,227 @@ export default async function ReportPage({
   const hasOccurrence = report.compare.reportedCount > 0;
   const over = report.compare.overGuidelineCount;
   const detected = report.detectedCount || report.compare.reportedCount;
-  const within = Math.max(detected - over, 0);
   const years = report.period || "live EPA window";
+  const chapterPhoto = ["/img/glass.jpg", "/img/kitchen.jpg", "/img/source.jpg"];
 
   return (
-    <article className="assessment">
-      <p className="kicker">
-        <span>Water health assessment {report.utility.pwsId}</span>
-        <Link href="/">New search</Link>
-      </p>
-      <h1 className="place">
-        {city}
-        {state ? `, ${state}` : ""}
-      </h1>
-      <p className="lede">Of utility test data reviewed. Independent analysis of municipal drinking water.</p>
-
-      <div className="meta-grid">
-        <div>
-          {hasOccurrence ? (
-            <div className="scoreboard">
-              <div className="stat">
-                <span className="n">{over}</span>
-                Out of range
-                <small>Exceed at least one health-based guideline for long-term exposure.</small>
-              </div>
-              <div className="stat ok">
-                <span className="n">{within}</span>
-                Within range
-                <small>Detected at levels below published health guidelines, or not in this sourced table.</small>
-              </div>
-              <div className="stat">
-                <span className="n">{pfas.length}</span>
-                PFAS compounds
-                <small>
-                  {pfas.length
-                    ? pfas.map((r) => `${r.name.split("(")[0].trim()} (${foldLabel(r.foldOver)})`).join(" and ")
-                    : "None over guidelines in this sourced table."}
-                </small>
-              </div>
-              <div className="stat ok">
-                <span className="n">{detected}</span>
-                Analytes
-                <small>Contaminants detected in the sourced window.</small>
-              </div>
-            </div>
-          ) : (
-            <div className="stat">
-              <span className="n">EPA</span>
-              Live identity only
-              <small>
-                No sourced occurrence table for this PWS. Fold-overs are not invented. EPA ECHO
-                contaminants in violation are listed below.
-              </small>
-            </div>
-          )}
-        </div>
-        <dl className="facts">
-          <dt>Location</dt>
-          <dd>
+    <article>
+      <header className="hero">
+        <img src="/img/hero-tap.jpg" alt="Kitchen faucet running into a sink" />
+        <div className="veil" />
+        <div className="hero-copy">
+          <Link className="nav" href="/">
+            New search
+          </Link>
+          <h1 className="place">
             {city}
             {state ? `, ${state}` : ""}
-          </dd>
-          <dt>Utility</dt>
-          <dd>{report.utility.name}</dd>
-          <dt>Period</dt>
-          <dd>{years}</dd>
-          <dt>Sources</dt>
-          <dd>
-            {hasOccurrence ? "U.S. EPA identity plus EWG health-guideline table" : "U.S. EPA SDWIS / ECHO"}
-          </dd>
-          <dt>Guideline set</dt>
-          <dd>{report.guidelineSet || "EPA legal limits and ECHO violation flags only"}</dd>
-        </dl>
+          </h1>
+          {hasOccurrence ? (
+            <div className="stamp">
+              {over} out of range
+              <small>
+                of {detected} detected · {years} · EWG health guidelines, not EPA MCLs
+              </small>
+            </div>
+          ) : (
+            <div className="stamp">
+              EPA live
+              <small>No sourced occurrence table. Fold-overs are not invented.</small>
+            </div>
+          )}
+          <p>
+            Independent read of {report.utility.name}. {report.utility.pwsId}.
+          </p>
+        </div>
+      </header>
+
+      <div className="film">
+        <figure>
+          <img src="/img/source.jpg" alt="High mountain water source" />
+          <figcaption>Source water</figcaption>
+        </figure>
+        <figure>
+          <img src="/img/glass.jpg" alt="Clear drinking glass of water" />
+          <figcaption>Ingestion</figcaption>
+        </figure>
+        <figure>
+          <img src="/img/shower.jpg" alt="Shower running" />
+          <figcaption>Skin and steam</figcaption>
+        </figure>
       </div>
 
-      {hasOccurrence ? (
-        <p className="analytes">
-          <b>{detected}</b> contaminants detected · {over} outside EWG health guidelines · EPA legal
-          compliance is a separate fact
-        </p>
-      ) : null}
+      <div className="sheet">
+        <dl className="facts">
+          <div>
+            <dt>Utility</dt>
+            <dd>{report.utility.name}</dd>
+          </div>
+          <div>
+            <dt>Period</dt>
+            <dd>{years}</dd>
+          </div>
+          <div>
+            <dt>Guideline set</dt>
+            <dd>{report.guidelineSet || "EPA legal flags only"}</dd>
+          </div>
+          <div>
+            <dt>PFAS over guidelines</dt>
+            <dd>
+              {hasOccurrence
+                ? pfas.length
+                  ? pfas.map((r) => `${r.name.split("(")[0].trim()} ${foldLabel(r.foldOver)}`).join("; ")
+                  : "None in this sourced table"
+                : "Not computed"}
+            </dd>
+          </div>
+        </dl>
 
-      {report.epaLive ? (
-        <section>
-          <h2>Live EPA ECHO status</h2>
+        {report.epaLive ? (
           <p>
-            Health flag: {report.epaLive.healthFlag || "n/a"}. Serious violator:{" "}
-            {report.epaLive.seriousViolator || "n/a"}. Activity: {report.epaLive.activity || "n/a"}.
-          </p>
-          <p>
-            Contaminants in violation (3 years):{" "}
+            Live EPA ECHO: health flag {report.epaLive.healthFlag || "n/a"}; serious violator{" "}
+            {report.epaLive.seriousViolator || "n/a"}. Contaminants in violation (3 years):{" "}
             {report.epaLive.contaminantsInViolation3yr.length
               ? report.epaLive.contaminantsInViolation3yr.map((c) => c.name).join("; ")
               : "none listed"}
+            .{" "}
+            {report.epaLive.sources[1] ? (
+              <a href={report.epaLive.sources[1]}>EPA facility report</a>
+            ) : null}
           </p>
-          {report.epaLive.sources[1] ? (
-            <p className="muted">
-              <a href={report.epaLive.sources[1]}>EPA detailed facility report</a>
-            </p>
-          ) : null}
-        </section>
-      ) : null}
+        ) : null}
 
-      <h2>Health risk pathways</h2>
-      <p className="muted">What these exceedances are linked to. Fold-over vs EWG / CA PHG, not EPA MCL.</p>
-      {primary.length === 0 ? (
-        <p>No sourced health-guideline exceedances to group.</p>
-      ) : (
-        primary.map((p, i) => (
-          <section className="pathway" key={p.id}>
-            <div className="num">{String(i + 1).padStart(2, "0")}</div>
-            <div>
-              <h3>{p.label}</h3>
-              <p className="muted">{p.blurb}</p>
-              <p>
-                <b>{p.rows.length}</b> linked contributors
-              </p>
+        {!hasOccurrence ? (
+          <p className="gap-note">
+            This ZIP has live EPA identity only. The 13-of-38 scoreboard exists when a sourced
+            occurrence table is on file, as with Parker WSD.
+          </p>
+        ) : null}
+
+        {primary.map((p, i) => (
+          <section className={i % 2 ? "chapter reverse" : "chapter"} key={p.id}>
+            <div className="photo">
+              <img src={chapterPhoto[i] || "/img/glass.jpg"} alt="" />
             </div>
-            <table className="contrib">
-              <tbody>
-                {p.rows.slice(0, 8).map((row) => (
-                  <tr key={row.name}>
-                    <td>{row.name}</td>
-                    <td>{foldLabel(row.foldOver)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div>
+              <h2>{p.label}</h2>
+              <p className="muted">{p.blurb}</p>
+              <table className="contrib">
+                <tbody>
+                  {p.rows.slice(0, 8).map((row) => (
+                    <tr key={row.name}>
+                      <td>{row.name}</td>
+                      <td>{foldLabel(row.foldOver)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
-        ))
-      )}
+        ))}
 
-      {secondary.length > 0 ? (
-        <>
-          <h2>Secondary pathways</h2>
-          <div className="routes">
-            {secondary.map((p) => (
-              <div className="route" key={p.id}>
-                <div className="pct">{p.rows.length}</div>
-                <div>{p.label}</div>
-                <p className="muted">{p.rows.map((r) => `${r.name} ${foldLabel(r.foldOver)}`).join("; ")}</p>
-              </div>
-            ))}
+        {secondary.length > 0 ? (
+          <p className="muted">
+            Also grouped:{" "}
+            {secondary
+              .map((p) => `${p.label} (${p.rows.map((r) => foldLabel(r.foldOver)).join(", ")})`)
+              .join(". ")}
+          </p>
+        ) : null}
+
+        <h2>Where you meet the water</h2>
+        <p className="muted">Typical drinking-water split. Not measured at this tap.</p>
+        <div className="exposure">
+          <figure>
+            <img src="/img/glass.jpg" alt="Glass of water" />
+            <figcaption>
+              <strong>~60%</strong>
+              Ingestion. Drinking, cooking, ice.
+            </figcaption>
+          </figure>
+          <figure>
+            <img src="/img/shower.jpg" alt="Shower" />
+            <figcaption>
+              <strong>~25%</strong>
+              Skin. Showers, baths, hands.
+            </figcaption>
+          </figure>
+          <figure>
+            <img src="/img/hero-tap.jpg" alt="Running tap" />
+            <figcaption>
+              <strong>~15%</strong>
+              Inhalation. Steam and aerosol.
+            </figcaption>
+          </figure>
+        </div>
+
+        <h2>What the utility report never tests</h2>
+        <div className="blinds">
+          <figure>
+            <img src="/img/source.jpg" alt="" />
+            <figcaption>Microplastics</figcaption>
+          </figure>
+          <figure>
+            <img src="/img/kitchen.jpg" alt="" />
+            <figcaption>Pharmaceuticals</figcaption>
+          </figure>
+          <figure>
+            <img src="/img/glass.jpg" alt="" />
+            <figcaption>BPA, hormones, pesticides</figcaption>
+          </figure>
+        </div>
+
+        <section className="cta">
+          <img src="/img/kitchen.jpg" alt="Kitchen interior" />
+          <div className="veil" />
+          <div className="cta-copy">
+            <h2>Engineer your water</h2>
+            <p>Diagnose. Treat. Verify. Retail packages below. Checkout is on the seller site.</p>
           </div>
-        </>
-      ) : null}
+        </section>
 
-      <h2>Exposure routes</h2>
-      <p className="muted">Typical drinking-water split. Not measured at this tap.</p>
-      <div className="routes">
-        <div className="route">
-          <div className="pct">~60%</div>
-          Ingestion
-          <p className="muted">Drinking, cooking, coffee, ice.</p>
+        <div className="packages">
+          {report.packages.map((pkg) => (
+            <article className="pack" key={pkg.id}>
+              <h3>{pkg.label}</h3>
+              <p>
+                <strong>{money(pkg.priceUsd)}</strong>
+              </p>
+              <ul>
+                {pkg.items.map((item) => (
+                  <li key={item.id}>
+                    {item.name} · {money(item.priceUsd)}
+                    {item.buyUrl ? (
+                      <>
+                        {" "}
+                        <a href={item.buyUrl} rel="noopener noreferrer">
+                          Buy
+                        </a>
+                      </>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
         </div>
-        <div className="route">
-          <div className="pct">~25%</div>
-          Dermal
-          <p className="muted">Skin during showers, baths, hand washing.</p>
-        </div>
-        <div className="route">
-          <div className="pct">~15%</div>
-          Inhalation
-          <p className="muted">Steam and aerosol in the shower.</p>
-        </div>
-      </div>
 
-      <h2>Blind spots</h2>
-      <p className="muted">
-        Unregulated contaminants EPA does not require in the utility report. Not a test result for
-        this ZIP.
-      </p>
-      <div className="blinds">
-        <div>01 Microplastics</div>
-        <div>02 Pharmaceuticals</div>
-        <div>03 Bisphenol A (BPA)</div>
-        <div>04 Hormones</div>
-        <div>05 Pesticides</div>
-        <div>06 Endocrine disruptors</div>
-      </div>
-
-      <section className="cta">
-        <h2>Engineer your water</h2>
-        <p>
-          Diagnose. Treat. Verify. One system matched to this contaminant profile. Retail packages
-          below. Checkout is on the seller site.
-        </p>
-      </section>
-
-      <div className="packages">
-        {report.packages.map((pkg) => (
-          <article className="pack" key={pkg.id}>
-            <h3>{pkg.label}</h3>
-            <p>
-              <strong>{money(pkg.priceUsd)}</strong>
-            </p>
+        {report.systems && report.systems.length > 1 ? (
+          <>
+            <h2>Other systems in this ZIP</h2>
             <ul>
-              {pkg.items.map((item) => (
-                <li key={item.id}>
-                  {item.name} · {money(item.priceUsd)}
-                  {item.buyUrl ? (
-                    <>
-                      {" "}
-                      <a href={item.buyUrl} rel="noopener noreferrer">
-                        Buy
-                      </a>
-                    </>
-                  ) : null}
+              {report.systems.slice(0, 12).map((s) => (
+                <li key={s.pwsId}>
+                  <Link href={`/report/${zip}?pws=${encodeURIComponent(s.pwsId)}`}>{s.name}</Link>
+                  <span className="muted"> · {s.pwsId}</span>
                 </li>
               ))}
             </ul>
-          </article>
-        ))}
+          </>
+        ) : null}
+
+        <p className="disclaimer">{report.disclaimer}</p>
       </div>
-
-      {report.systems && report.systems.length > 1 ? (
-        <>
-          <h2>Other systems in this ZIP</h2>
-          <ul>
-            {report.systems.slice(0, 12).map((s) => (
-              <li key={s.pwsId}>
-                <Link href={`/report/${zip}?pws=${encodeURIComponent(s.pwsId)}`}>{s.name}</Link>
-                <span className="muted"> · {s.pwsId}</span>
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : null}
-
-      <p className="disclaimer">{report.disclaimer}</p>
     </article>
   );
 }
