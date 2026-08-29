@@ -15,7 +15,7 @@ export function QualityGauge({ value, band }: { value: number; band: QualityBand
         fill="none"
         stroke={color}
         strokeWidth="12"
-        strokeLinecap="butt"
+        strokeLinecap="round"
         strokeDasharray={c}
         strokeDashoffset={offset}
         transform="rotate(-90 70 70)"

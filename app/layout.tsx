@@ -25,11 +25,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body>
         {/*
-THESIS: A water health assessment should feel like a home diagnostic you can sell from, not a dashboard of metric boxes. Photography of water in use carries the risk; numbers sit on the image.
-OWN-WORLD: Wet-stone print insert. Cool river-slate ink on limestone ground. Full-bleed kitchen, glass, shower, and source photos. Bricolage Grotesque display, Atkinson Hyperlegible body. Rust only for out-of-range proof.
+THESIS: A water health assessment should feel like a continuous ribbon of water in the home, not a dashboard of tiles. Photography carries the risk; numbers ride the same flow.
+OWN-WORLD: Wet-stone print insert. Cool river-slate ink on limestone ground. Full-bleed abutting photos. Bricolage Grotesque display, Atkinson Hyperlegible body. Rust only in type and hairline bars.
 STORY: Visitor sees the town in water, believes the fold-overs because EPA vs EWG is labeled, then buys a package.
-FIRST VIEWPORT: Full-bleed tap photo, town name large on the left, a single rust stamp with the out-of-range count on the photo, search link top-right. No four-up cards.
-FORM: Marketing-executive photography report. Brief-pinned: imaging versus blocks. Seed: user-pinned.
+FIRST VIEWPORT: Full-bleed tap photo, town name large, out-of-range count as type on the photo, not a stamp block.
+FORM: Marketing-executive photography report. User asked: less boxy, more smooth. Seed: user-pinned.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
         */}
         {children}
