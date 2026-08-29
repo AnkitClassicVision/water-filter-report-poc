@@ -1,4 +1,5 @@
 import guidelines from "../data/epa/guidelines.json";
+import ucmr4 from "../data/epa/ucmr4-haa.json";
 import ucmr from "../data/epa/ucmr5.json";
 import haa5 from "../data/epa/syr4-haa5.json";
 import radium from "../data/epa/syr4-radium.json";
@@ -31,6 +32,10 @@ const GUIDE = guidelines as Record<string, Guide>;
 const UCMR_URL = "https://www.epa.gov/dwucmr/occurrence-data-unregulated-contaminant-monitoring-rule";
 const SYR4_URL = "https://www.epa.gov/dwsixyearreview/six-year-review-4-compliance-monitoring-data-2012-2019";
 
+function norm(pwsId: string): string {
+  return pwsId.trim().toUpperCase();
+}
+
 function mapDetect(row: Detect, sourceUrl: string, ugL: boolean): ContaminantResult | null {
   const g = GUIDE[row.name];
   if (!g) return null;
@@ -50,49 +55,67 @@ function mapDetect(row: Detect, sourceUrl: string, ugL: boolean): ContaminantRes
 }
 
 export function pwsIdsForZip(zip: string): string[] {
-  return (ucmr.zips as Record<string, string[]>)[zip] || [];
+  const ids = new Set<string>([
+    ...((ucmr.zips as Record<string, string[]>)[zip] || []),
+    ...((ucmr4.zips as Record<string, string[]>)[zip] || [])
+  ]);
+  return [...ids];
 }
 
 export function warehouseName(pwsId: string): string | undefined {
-  return (ucmr.meta as Record<string, { name?: string }>)[pwsId]?.name;
+  const id = norm(pwsId);
+  return (
+    (ucmr.meta as Record<string, { name?: string }>)[id]?.name ||
+    (ucmr4.meta as Record<string, { name?: string }>)[id]?.name
+  );
 }
 
 export function warehouseResults(pwsId: string): ContaminantResult[] {
-  const id = pwsId.toUpperCase();
+  const id = norm(pwsId);
   const rows: ContaminantResult[] = [];
-  const ucmrRows = (ucmr.detects as Record<string, Detect[]>)[id] || [];
-  for (const row of ucmrRows) {
-    const mapped = mapDetect(row, UCMR_URL, true);
-    if (mapped) rows.push(mapped);
+  const seen = new Set<string>();
+
+  const push = (mapped: ContaminantResult | null) => {
+    if (!mapped || seen.has(mapped.name)) return;
+    seen.add(mapped.name);
+    rows.push(mapped);
+  };
+
+  for (const row of (ucmr.detects as Record<string, Detect[]>)[id] || []) {
+    push(mapDetect(row, UCMR_URL, true));
+  }
+  for (const row of (ucmr4.detects as Record<string, Detect[]>)[id] || []) {
+    push(mapDetect(row, UCMR_URL, true));
   }
   const tthmRow = (tthm.detects as Record<string, Detect>)[id];
   const haaRow = (haa5.detects as Record<string, Detect>)[id];
   const radRow = (radium.detects as Record<string, Detect>)[id];
-  if (tthmRow) {
-    const mapped = mapDetect(tthmRow, SYR4_URL, false);
-    if (mapped) rows.push(mapped);
-  }
-  if (haaRow) {
-    const mapped = mapDetect(haaRow, SYR4_URL, false);
-    if (mapped) rows.push(mapped);
-  }
-  if (radRow) {
-    const mapped = mapDetect(radRow, SYR4_URL, false);
-    if (mapped) rows.push(mapped);
-  }
+  if (tthmRow) push(mapDetect(tthmRow, SYR4_URL, false));
+  if (haaRow) push(mapDetect(haaRow, SYR4_URL, false));
+  if (radRow) push(mapDetect(radRow, SYR4_URL, false));
   return rows;
 }
 
 export function warehousePeriod(pwsId: string): string {
-  const id = pwsId.toUpperCase();
-  const hasUcmr = Boolean((ucmr.detects as Record<string, Detect[]>)[id]?.length);
+  const id = norm(pwsId);
+  const hasUcmr5 = Boolean((ucmr.detects as Record<string, Detect[]>)[id]?.length);
+  const hasUcmr4 = Boolean((ucmr4.detects as Record<string, Detect[]>)[id]?.length);
   const hasSyr = Boolean(
     (tthm.detects as Record<string, Detect>)[id] ||
       (haa5.detects as Record<string, Detect>)[id] ||
       (radium.detects as Record<string, Detect>)[id]
   );
-  if (hasUcmr && hasSyr) return "EPA UCMR 5 2023-2025 and SYR4 2012-2019";
-  if (hasUcmr) return "EPA UCMR 5 2023-2025";
-  if (hasSyr) return "EPA SYR4 2012-2019";
-  return "EPA identity only";
+  const parts: string[] = [];
+  if (hasUcmr5) parts.push("UCMR 5 2023-2025");
+  if (hasUcmr4) parts.push("UCMR 4 2018-2020");
+  if (hasSyr) parts.push("SYR4 2012-2019");
+  return parts.length ? `EPA ${parts.join(" and ")}` : "EPA identity only";
+}
+
+export function warehouseCoverage(): { ucmr5Zips: number; ucmr4Zips: number; unionZips: number } {
+  const a = new Set(Object.keys(ucmr.zips as Record<string, string[]>));
+  const b = Object.keys(ucmr4.zips as Record<string, string[]>);
+  const union = new Set(a);
+  for (const z of b) union.add(z);
+  return { ucmr5Zips: a.size, ucmr4Zips: b.length, unionZips: union.size };
 }

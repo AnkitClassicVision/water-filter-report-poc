@@ -109,6 +109,17 @@
     "healthEffects": ["cancer", "liver", "developmental", "immune", "genotoxic"],
     "exposure": ["consumption", "dermal", "inhalation"]
   },
+  "HAA5": {
+    "display": "Haloacetic acids (HAA5)",
+    "unit": "ppb",
+    "fromUgL": 1,
+    "healthGuideline": 0.1,
+    "healthGuidelineSource": "EWG health guideline 0.1 ppb",
+    "mcl": 60,
+    "mclSource": "EPA MCL 60 ppb",
+    "healthEffects": ["cancer"],
+    "exposure": ["consumption", "dermal"]
+  },
   "Haloacetic acids (HAA5)": {
     "display": "Haloacetic acids (HAA5)",
     "unit": "ppb",
@@ -117,6 +128,17 @@
     "healthGuidelineSource": "EWG health guideline 0.1 ppb",
     "mcl": 60,
     "mclSource": "EPA MCL 60 ppb",
+    "healthEffects": ["cancer"],
+    "exposure": ["consumption", "dermal"]
+  },
+  "HAA9": {
+    "display": "Haloacetic acids (HAA9)",
+    "unit": "ppb",
+    "fromUgL": 1,
+    "healthGuideline": 0.06,
+    "healthGuidelineSource": "EWG health guideline 0.06 ppb",
+    "mcl": null,
+    "mclSource": "No EPA MCL for HAA9",
     "healthEffects": ["cancer"],
     "exposure": ["consumption", "dermal"]
   },

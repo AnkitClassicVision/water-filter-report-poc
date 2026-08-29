@@ -155,7 +155,7 @@ export async function buildReport(
     detectedCount: fixtureMatch?.detectedCount || measured.length,
     guidelineSet: fixtureMatch
       ? "EWG health guidelines (stricter than EPA MCLs)"
-      : "Health guidelines vs EPA UCMR 5 (2023-2025) and SYR4 (2012-2019) warehouse files. Not a live ECHO concentration API."
+      : "Health guidelines vs EPA UCMR 5 (2023-2025), UCMR 4 (2018-2020), and SYR4 (2012-2019) warehouse files. Not a live ECHO concentration API."
   };
 }
 

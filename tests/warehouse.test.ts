@@ -21,4 +21,12 @@ describe("EPA warehouse", () => {
     expect(names.some((n) => n.includes("trihalomethane"))).toBe(true);
     expect(names.some((n) => n.includes("HAA5"))).toBe(true);
   });
+
+  it("has UCMR 4 HAA9 for Cobb County 30062", () => {
+    expect(pwsIdsForZip("30062")).toContain("GA0670003");
+    const rows = warehouseResults("GA0670003");
+    const haa9 = rows.find((r) => r.name.includes("HAA9"));
+    expect(haa9).toBeTruthy();
+    expect(haa9!.value).toBeGreaterThan(20);
+  });
 });
