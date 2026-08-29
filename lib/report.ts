@@ -63,9 +63,20 @@ export async function buildReport(
     systems = [];
   }
   if (!systems.length) systems = hitsFromWarehouse(zip);
+  else {
+    const have = new Set(systems.map((s) => s.pwsId));
+    for (const hit of hitsFromWarehouse(zip)) {
+      if (!have.has(hit.pwsId)) systems.push(hit);
+    }
+  }
 
+  const ranked = [...systems].sort((a, b) => {
+    const aw = warehouseResults(a.pwsId).length + (FIXTURES_BY_PWS[a.pwsId] ? 100 : 0);
+    const bw = warehouseResults(b.pwsId).length + (FIXTURES_BY_PWS[b.pwsId] ? 100 : 0);
+    return bw - aw;
+  });
   const chosen =
-    systems.find((s) => opts?.pwsId && s.pwsId === opts.pwsId) || systems[0] || null;
+    systems.find((s) => opts?.pwsId && s.pwsId === opts.pwsId) || ranked[0] || null;
 
   const sdwis = chosen
     ? await getSdwisSystem(chosen.pwsId, fetchImpl).catch(() => null)

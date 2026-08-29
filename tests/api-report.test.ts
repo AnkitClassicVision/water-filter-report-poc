@@ -76,6 +76,31 @@ describe("buildReport", () => {
     expect("error" in out && out.status === 400).toBe(true);
   });
 
+  it("prefers a UCMR warehouse PWS when SDWIS returns an empty-data system", async () => {
+    const fetchEmpty: typeof fetch = async (input) => {
+      const url = String(input);
+      if (url.includes("/api/v1/zip/10001")) {
+        return json({
+          systems: [
+            {
+              pwsid: "FL6294591",
+              name: "Unrelated",
+              population: 10,
+              type: "Transient",
+              violations: 0,
+              health_based: 0
+            }
+          ]
+        });
+      }
+      return new Response("nope", { status: 404 });
+    };
+    const out = await buildReport("10001", { fetchImpl: fetchEmpty });
+    if ("error" in out) throw new Error(out.error);
+    expect(out.compare.reportedCount).toBeGreaterThan(0);
+    expect(out.period).toMatch(/UCMR|SYR4/);
+  });
+
   it("returns live Parker report for 80134", async () => {
     const out = await buildReport("80134", { fetchImpl });
     if ("error" in out) throw new Error(out.error);
