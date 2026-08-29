@@ -1,0 +1,134 @@
+{
+  "PFOA": {
+    "display": "Perfluorooctanoic acid (PFOA)",
+    "unit": "ppt",
+    "fromUgL": 1000,
+    "healthGuideline": 0.09,
+    "healthGuidelineSource": "EWG health guideline 0.09 ppt",
+    "mcl": 4,
+    "mclSource": "EPA MCL 4 ppt",
+    "healthEffects": ["cancer", "developmental"],
+    "exposure": ["consumption"]
+  },
+  "PFOS": {
+    "display": "Perfluorooctane sulfonate (PFOS)",
+    "unit": "ppt",
+    "fromUgL": 1000,
+    "healthGuideline": 4,
+    "healthGuidelineSource": "EPA MCL 4 ppt used as the comparison (no EWG row in this table)",
+    "mcl": 4,
+    "mclSource": "EPA MCL 4 ppt",
+    "healthEffects": ["cancer", "developmental"],
+    "exposure": ["consumption"]
+  },
+  "PFHxS": {
+    "display": "Perfluorohexane sulfonate (PFHxS)",
+    "unit": "ppt",
+    "fromUgL": 1000,
+    "healthGuideline": 0.001,
+    "healthGuidelineSource": "EWG health guideline 0.001 ppt",
+    "mcl": 10,
+    "mclSource": "EPA MCL 10 ppt",
+    "healthEffects": ["cancer", "developmental"],
+    "exposure": ["consumption"]
+  },
+  "PFNA": {
+    "display": "Perfluorononanoic acid (PFNA)",
+    "unit": "ppt",
+    "fromUgL": 1000,
+    "healthGuideline": 10,
+    "healthGuidelineSource": "EPA MCL 10 ppt used as the comparison (no EWG row in this table)",
+    "mcl": 10,
+    "mclSource": "EPA MCL 10 ppt",
+    "healthEffects": ["developmental"],
+    "exposure": ["consumption"]
+  },
+  "HFPO-DA": {
+    "display": "HFPO-DA (GenX)",
+    "unit": "ppt",
+    "fromUgL": 1000,
+    "healthGuideline": 10,
+    "healthGuidelineSource": "EPA MCL 10 ppt used as the comparison (no EWG row in this table)",
+    "mcl": 10,
+    "mclSource": "EPA MCL 10 ppt",
+    "healthEffects": ["developmental"],
+    "exposure": ["consumption"]
+  },
+  "PFBS": {
+    "display": "Perfluorobutane sulfonate (PFBS)",
+    "unit": "ppb",
+    "fromUgL": 1,
+    "healthGuideline": 2,
+    "healthGuidelineSource": "EPA PFAS NPDWR health-based water concentration 2 ug/L",
+    "mcl": null,
+    "mclSource": "No individual EPA MCL",
+    "healthEffects": ["developmental"],
+    "exposure": ["consumption"]
+  },
+  "PFBA": {
+    "display": "Perfluorobutanoic acid (PFBA)",
+    "unit": "ppb",
+    "fromUgL": 1,
+    "healthGuideline": 6,
+    "healthGuidelineSource": "USGS health-based screening level 6 ug/L (UCMR 5 Table 2)",
+    "mcl": null,
+    "mclSource": "No EPA MCL",
+    "healthEffects": ["other"],
+    "exposure": ["consumption"]
+  },
+  "PFHxA": {
+    "display": "Perfluorohexanoic acid (PFHxA)",
+    "unit": "ppb",
+    "fromUgL": 1,
+    "healthGuideline": 3,
+    "healthGuidelineSource": "USGS health-based screening level 3 ug/L (UCMR 5 Table 2)",
+    "mcl": null,
+    "mclSource": "No EPA MCL",
+    "healthEffects": ["other"],
+    "exposure": ["consumption"]
+  },
+  "lithium": {
+    "display": "Lithium",
+    "unit": "ppb",
+    "fromUgL": 1,
+    "healthGuideline": 10,
+    "healthGuidelineSource": "EPA CCL 5 health reference level 10 ug/L (UCMR 5 Table 2)",
+    "mcl": null,
+    "mclSource": "No EPA MCL",
+    "healthEffects": ["other"],
+    "exposure": ["consumption"]
+  },
+  "Total trihalomethanes (TTHMs)": {
+    "display": "Total trihalomethanes (TTHMs)",
+    "unit": "ppb",
+    "fromUgL": 1,
+    "healthGuideline": 0.15,
+    "healthGuidelineSource": "EWG health guideline 0.15 ppb",
+    "mcl": 80,
+    "mclSource": "EPA MCL 80 ppb",
+    "healthEffects": ["cancer", "liver", "developmental", "immune", "genotoxic"],
+    "exposure": ["consumption", "dermal", "inhalation"]
+  },
+  "Haloacetic acids (HAA5)": {
+    "display": "Haloacetic acids (HAA5)",
+    "unit": "ppb",
+    "fromUgL": 1,
+    "healthGuideline": 0.1,
+    "healthGuidelineSource": "EWG health guideline 0.1 ppb",
+    "mcl": 60,
+    "mclSource": "EPA MCL 60 ppb",
+    "healthEffects": ["cancer"],
+    "exposure": ["consumption", "dermal"]
+  },
+  "Radium, combined (226 and 228)": {
+    "display": "Radium, combined (226 and 228)",
+    "unit": "pCi/L",
+    "fromUgL": 1,
+    "healthGuideline": 0.05,
+    "healthGuidelineSource": "EWG health guideline 0.05 pCi/L",
+    "mcl": 5,
+    "mclSource": "EPA MCL 5 pCi/L",
+    "healthEffects": ["cancer"],
+    "exposure": ["consumption"]
+  }
+}

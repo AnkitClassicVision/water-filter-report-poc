@@ -6,9 +6,10 @@ Not medical advice. Checkout is on the seller site. Visitor ZIP codes are not st
 
 ## Live data
 
-1. ZIP search uses EPA SDWIS via `https://waterviolations.org/api/v1/zip/{zip}` (public-domain EPA data, quarterly).
-2. The selected PWS is enriched from EPA ECHO SDWA REST (`get_systems` + `get_qid`), including 3-year contaminants in violation.
-3. Measured concentration tables are used only when a sourced fixture exists for that PWS (Parker `CO0118040`). Other ZIPs do not get invented ppb values.
+1. ZIP search uses EPA SDWIS via waterviolations.org, then falls back to EPA UCMR 5 ZIP files.
+2. The selected PWS is enriched from EPA ECHO (identity, health flag, 3-year contaminants in violation).
+3. Nationwide concentrations come from compact EPA warehouse files: UCMR 5 (2023-2025 PFAS and lithium) and Six-Year Review 4 (2012-2019 TTHM, HAA5, combined radium). These are EPA files, not a live concentration API.
+4. Parker `CO0118040` still uses the sourced EWG 2013-2024 table so the sample PDF layout stays intact. Other ZIPs use the EPA warehouse. No invented 13-of-38 counts.
 
 ## Prices (28 Aug 2026)
 
